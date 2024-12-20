@@ -1,0 +1,42 @@
+// script.js
+const player = document.getElementById("player");
+const obstacle = document.getElementById("obstacle");
+let isJumping = false;
+
+// Player jump functionality
+document.addEventListener("keydown", (event) => {
+  if (event.code === "Space" && !isJumping) {
+    isJumping = true;
+    let jumpUp = setInterval(() => {
+      let playerBottom = parseInt(window.getComputedStyle(player).bottom);
+      if (playerBottom >= 150) {
+        clearInterval(jumpUp);
+        let fallDown = setInterval(() => {
+          if (playerBottom <= 0) {
+            clearInterval(fallDown);
+            isJumping = false;
+          }
+          player.style.bottom = playerBottom - 5 + "px";
+          playerBottom -= 5;
+        }, 20);
+      }
+      player.style.bottom = playerBottom + 5 + "px";
+      playerBottom += 5;
+    }, 20);
+  }
+});
+
+// Collision detection
+setInterval(() => {
+  const playerRect = player.getBoundingClientRect();
+  const obstacleRect = obstacle.getBoundingClientRect();
+
+  if (
+    playerRect.right > obstacleRect.left &&
+    playerRect.left < obstacleRect.right &&
+    playerRect.bottom > obstacleRect.top
+  ) {
+    alert("Game Over!");
+    window.location.reload();
+  }
+}, 10);
